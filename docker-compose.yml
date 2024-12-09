@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  pg:
+    image: bitnami/postgresql:latest
+    container_name: pg
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=docker
+    networks:
+      - app-network
+
+  api-docker:
+    build:
+      context: .
+    container_name: api-docker
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://docker:docker@pg:5432/docker
+    depends_on:
+      - pg
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
